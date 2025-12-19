@@ -34,8 +34,6 @@ export default function EmployeePage() {
       <Sidebar 
         title="Employee Portal" 
         subtitle={currentEmployee.name}
-        linkTo="/"
-        linkText="← Admin Portal"
       >
         <NavButton
           onClick={() => setCurrentView('dashboard')}
