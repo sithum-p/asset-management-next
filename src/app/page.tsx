@@ -14,6 +14,7 @@ import { EmployeeDetail } from './components/EmployeeDetail';
 import { AssetRequests, AssetRequest } from './components/AssetRequests';
 import { Reports } from './components/admin/Reports';
 import { Settings } from './components/admin/Settings';
+import { OrganizationAdminList } from './components/OrganizationAdminList';
 import { Sidebar } from './components/shared/Sidebar';
 import { NavButton } from './components/shared/NavButton';
 import { MainLayout } from './components/shared/MainLayout';
@@ -86,10 +87,10 @@ export interface Employee {
   emergencyContactPhone?: string;
 }
 
-type View = 'dashboard' | 'assets' | 'add-asset' | 'asset-detail' | 'organizations' | 'add-organization' | 'organization-detail' | 'employees' | 'add-employee' | 'employee-detail' | 'reports' | 'settings' | 'asset-requests';
+type View = 'dashboard' | 'assets' | 'add-asset' | 'asset-detail' | 'organizations' | 'add-organization' | 'organization-detail' | 'employees' | 'add-employee' | 'employee-detail' | 'reports' | 'settings' | 'asset-requests' | 'organization-admins';
 
 export default function App() {
-  const [currentView, setCurrentView] = useState<'dashboard' | 'assets' | 'add-asset' | 'asset-detail' | 'organizations' | 'add-organization' | 'organization-detail' | 'employees' | 'add-employee' | 'employee-detail' | 'reports' | 'settings' | 'asset-requests'>('dashboard');
+  const [currentView, setCurrentView] = useState<'dashboard' | 'assets' | 'add-asset' | 'asset-detail' | 'organizations' | 'add-organization' | 'organization-detail' | 'employees' | 'add-employee' | 'employee-detail' | 'reports' | 'settings' | 'asset-requests' | 'organization-admins'>('dashboard');
   const [editingAsset, setEditingAsset] = useState<Asset | null>(null);
   const [editingOrganization, setEditingOrganization] = useState<Organization | null>(null);
   const [selectedOrganization, setSelectedOrganization] = useState<Organization | null>(null);
@@ -536,17 +537,29 @@ export default function App() {
     }));
   };
 
-  const handleAddOrganization = (org: Omit<Organization, 'id'>) => {
+  const handleAddOrganization = (org: Omit<Organization, 'id'>, admin?: Omit<SubAdmin, 'id' | 'organizationId' | 'createdDate'>) => {
     const newOrg = {
       ...org,
       id: Date.now().toString()
     };
     setOrganizations([...organizations, newOrg]);
+    
+    // Create admin if provided
+    if (admin) {
+      const newAdmin = {
+        ...admin,
+        id: (Date.now() + 1).toString(),
+        organizationId: newOrg.id,
+        createdDate: new Date().toISOString().split('T')[0]
+      };
+      setSubAdmins([...subAdmins, newAdmin]);
+    }
+    
     setShowOrganizationModal(false);
     setEditingOrganization(null);
   };
 
-  const handleUpdateOrganization = (org: Organization) => {
+  const handleUpdateOrganization = (org: Organization, admin?: Omit<SubAdmin, 'id' | 'organizationId' | 'createdDate'>) => {
     setOrganizations(organizations.map(o => o.id === org.id ? org : o));
     setEditingOrganization(null);
     if (selectedOrganization && selectedOrganization.id === org.id) {
@@ -631,8 +644,6 @@ export default function App() {
     <MainLayout>
       <Sidebar 
         title="Asset Manager"
-        linkTo="/employee"
-        linkText="→ Employee Portal"
       >
         <NavButton
           onClick={() => {
@@ -676,6 +687,17 @@ export default function App() {
           icon={<UserCircle className="w-5 h-5" />}
         >
           Employees
+        </NavButton>
+        
+        <NavButton
+          onClick={() => {
+            setCurrentView('organization-admins');
+            setEditingAsset(null);
+          }}
+          isActive={currentView === 'organization-admins'}
+          icon={<Building2 className="w-5 h-5" />}
+        >
+          Organization Admins
         </NavButton>
         
         <NavButton
@@ -807,26 +829,10 @@ export default function App() {
           <EmployeeList 
             employees={employees}
             organizations={organizations}
-            onEdit={handleEditEmployee}
-            onDelete={handleDeleteEmployee}
-            onAddNew={() => {
-              setEditingEmployee(null);
-              setShowEmployeeModal(true);
-            }}
             onViewDetails={handleViewEmployeeDetails}
           />
         )}
-        {currentView === 'add-employee' && (
-          <EmployeeForm 
-            onSubmit={editingEmployee ? handleUpdateEmployee : handleAddEmployee}
-            initialData={editingEmployee}
-            organizations={organizations}
-            onCancel={() => {
-              setCurrentView('employees');
-              setEditingEmployee(null);
-            }}
-          />
-        )}
+
         {currentView === 'employee-detail' && selectedEmployee && (
           <EmployeeDetail 
             employee={selectedEmployee}
@@ -845,6 +851,15 @@ export default function App() {
             assetRequests={assetRequests}
             onAddRequest={handleAddAssetRequest}
             onUpdateRequest={handleUpdateAssetRequest}
+          />
+        )}
+        {currentView === 'organization-admins' && (
+          <OrganizationAdminList 
+            subAdmins={subAdmins}
+            organizations={organizations}
+            onAdd={handleAddSubAdmin}
+            onUpdate={handleUpdateSubAdmin}
+            onDelete={handleDeleteSubAdmin}
           />
         )}
         {currentView === 'reports' && <Reports assets={assets} organizations={organizations} />}
@@ -884,22 +899,7 @@ export default function App() {
         </div>
       )}
 
-      {/* Employee Modal */}
-      {showEmployeeModal && (
-        <div className="fixed inset-0 bg-white/40 backdrop-blur-sm flex items-center justify-center z-50 animate-fadeIn p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto transform transition-all animate-slideUp border border-gray-200">
-            <EmployeeForm 
-              onSubmit={editingEmployee ? handleUpdateEmployee : handleAddEmployee}
-              initialData={editingEmployee}
-              organizations={organizations}
-              onCancel={() => {
-                setShowEmployeeModal(false);
-                setEditingEmployee(null);
-              }}
-            />
-          </div>
-        </div>
-      )}
+
     </MainLayout>
   );
 }

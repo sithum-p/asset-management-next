@@ -1,17 +1,14 @@
 import { Employee, Organization } from '../page';
-import { User, Mail, Phone, Building2, Calendar, Edit2, Trash2, Plus, Search, Filter } from 'lucide-react';
+import { User, Mail, Phone, Building2, Calendar, Search, Filter } from 'lucide-react';
 import { useState } from 'react';
 
 interface EmployeeListProps {
   employees: Employee[];
   organizations: Organization[];
-  onEdit: (employee: Employee) => void;
-  onDelete: (id: string) => void;
-  onAddNew: () => void;
   onViewDetails: (employee: Employee) => void;
 }
 
-export function EmployeeList({ employees, organizations, onEdit, onDelete, onAddNew, onViewDetails }: EmployeeListProps) {
+export function EmployeeList({ employees, organizations, onViewDetails }: EmployeeListProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterOrganization, setFilterOrganization] = useState('all');
   const [filterDepartment, setFilterDepartment] = useState('all');
@@ -43,18 +40,9 @@ export function EmployeeList({ employees, organizations, onEdit, onDelete, onAdd
 
   return (
     <div>
-      <div className="mb-8 flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl text-gray-900 mb-2">Employee Management</h2>
-          <p className="text-gray-600">Manage your organization's employees</p>
-        </div>
-        <button
-          onClick={onAddNew}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-        >
-          <Plus className="w-5 h-5" />
-          Add Employee
-        </button>
+      <div className="mb-8">
+        <h2 className="text-2xl text-gray-900 mb-2">Employee List</h2>
+        <p className="text-gray-600">View and assign employees</p>
       </div>
 
       {/* Filters */}
@@ -122,22 +110,6 @@ export function EmployeeList({ employees, organizations, onEdit, onDelete, onAdd
                 </div>
               </div>
               <div className="flex gap-2">
-                <button
-                  onClick={() => onEdit(employee)}
-                  className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                >
-                  <Edit2 className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={() => {
-                    if (window.confirm('Are you sure you want to delete this employee?')) {
-                      onDelete(employee.id);
-                    }
-                  }}
-                  className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
                 <button
                   onClick={() => onViewDetails(employee)}
                   className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors"

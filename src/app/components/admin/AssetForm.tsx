@@ -73,7 +73,7 @@ export function AssetForm({ onSubmit, initialData, onCancel, organizations }: As
               value={formData.name}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
               placeholder="e.g., Dell Laptop XPS 15"
             />
           </div>
@@ -88,7 +88,7 @@ export function AssetForm({ onSubmit, initialData, onCancel, organizations }: As
               value={formData.category}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
               placeholder="e.g., Electronics, Furniture"
             />
           </div>
@@ -102,7 +102,7 @@ export function AssetForm({ onSubmit, initialData, onCancel, organizations }: As
               value={formData.status}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
             >
               <option value="active">Active</option>
               <option value="maintenance">Maintenance</option>
@@ -121,7 +121,7 @@ export function AssetForm({ onSubmit, initialData, onCancel, organizations }: As
               value={formData.location}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
               placeholder="e.g., Office - Floor 2"
             />
           </div>
@@ -136,7 +136,7 @@ export function AssetForm({ onSubmit, initialData, onCancel, organizations }: As
               value={formData.purchaseDate}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
             />
           </div>
 
@@ -152,7 +152,7 @@ export function AssetForm({ onSubmit, initialData, onCancel, organizations }: As
               required
               min="0"
               step="0.01"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
               placeholder="e.g., 1500"
             />
           </div>
@@ -170,7 +170,7 @@ export function AssetForm({ onSubmit, initialData, onCancel, organizations }: As
               min="0"
               max="100"
               step="0.1"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
               placeholder="e.g., 20 (Electronics: 20%, Furniture: 10%)"
             />
             <p className="text-xs text-gray-500 mt-1">
@@ -187,7 +187,7 @@ export function AssetForm({ onSubmit, initialData, onCancel, organizations }: As
               name="assignedTo"
               value={formData.assignedTo}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
               placeholder="e.g., John Doe"
             />
           </div>
@@ -201,7 +201,7 @@ export function AssetForm({ onSubmit, initialData, onCancel, organizations }: As
               value={formData.description}
               onChange={handleChange}
               rows={3}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
               placeholder="Additional notes about the asset..."
             />
           </div>
@@ -214,7 +214,7 @@ export function AssetForm({ onSubmit, initialData, onCancel, organizations }: As
               name="organizationId"
               value={formData.organizationId}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
             >
               <option value="">Select an organization</option>
               {organizations.map(org => (

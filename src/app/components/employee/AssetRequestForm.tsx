@@ -77,7 +77,7 @@ export function AssetRequestForm({ employee }: AssetRequestFormProps) {
                 value={formData.assetName}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
                 placeholder="e.g., Dell Laptop XPS 15"
               />
             </div>
@@ -91,7 +91,7 @@ export function AssetRequestForm({ employee }: AssetRequestFormProps) {
                 value={formData.category}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
               >
                 <option value="">Select Category</option>
                 <option value="Electronics">Electronics</option>
@@ -114,7 +114,7 @@ export function AssetRequestForm({ employee }: AssetRequestFormProps) {
                 value={formData.quantity}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
               />
             </div>
 
@@ -126,7 +126,7 @@ export function AssetRequestForm({ employee }: AssetRequestFormProps) {
                 name="priority"
                 value={formData.priority}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
               >
                 <option value="low">Low</option>
                 <option value="medium">Medium</option>
@@ -144,7 +144,7 @@ export function AssetRequestForm({ employee }: AssetRequestFormProps) {
                 onChange={handleChange}
                 required
                 rows={4}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
                 placeholder="Please explain why you need this asset..."
               />
             </div>
