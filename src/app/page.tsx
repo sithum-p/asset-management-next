@@ -316,6 +316,7 @@ export default function App() {
       location: 'Unknown',
       purchaseDate: '2023-08-15',
       value: 45,
+      depreciationRate: 20,
       assignedTo: 'Saman Perera',
       description: 'Wireless mouse - reported missing',
       logs: [
@@ -356,6 +357,7 @@ export default function App() {
       location: 'Unknown',
       purchaseDate: '2023-05-10',
       value: 650,
+      depreciationRate: 20,
       description: 'Monitor lost during office relocation',
       logs: [
         {
