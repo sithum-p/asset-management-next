@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Asset, Organization } from '../page';
-import { Search, Filter, Edit2, Trash2, MapPin, Calendar, DollarSign, Building2, Plus } from 'lucide-react';
+import { Search, Filter, Edit2, Trash2, MapPin, Calendar, DollarSign, Building2, Plus, Package } from 'lucide-react';
 
 interface AssetListProps {
   assets: Asset[];

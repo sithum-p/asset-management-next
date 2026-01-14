@@ -3,7 +3,7 @@ import { Employee, Organization } from '../page';
 import { Save, X } from 'lucide-react';
 
 interface EmployeeFormProps {
-  onSubmit: (employee: any) => void;
+  onSubmit: (employee: Partial<Employee>) => void;
   initialData?: Employee | null;
   onCancel: () => void;
   organizations: Organization[];
