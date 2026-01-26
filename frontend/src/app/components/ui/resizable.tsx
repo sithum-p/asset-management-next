@@ -3,7 +3,7 @@
 import * as React from "react";
 import { GripVerticalIcon } from "lucide-react";
 
-import { cn } from "./utils";
+import { cn } from "../../../lib/utils";
 
 const ResizablePanelGroup = React.forwardRef<
   React.ElementRef<"div">,

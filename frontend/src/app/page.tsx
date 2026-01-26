@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Dashboard } from './components/admin/Dashboard';
 import { AssetList } from './components/admin/AssetList';
 import { AssetForm } from './components/admin/AssetForm';
@@ -18,7 +18,16 @@ import { OrganizationAdminList } from './components/OrganizationAdminList';
 import { Sidebar } from './components/shared/Sidebar';
 import { NavButton } from './components/shared/NavButton';
 import { MainLayout } from './components/shared/MainLayout';
-import { LayoutDashboard, Package, Building2, BarChart3, Settings as SettingsIcon, UserCircle, FileText } from 'lucide-react';
+import { LayoutDashboard, Package, Building2, BarChart3, Settings as SettingsIcon, UserCircle, FileText, User } from 'lucide-react';
+import Link from "next/link";
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  organizationId: string;
+}
 
 export interface AssetLog {
   id: string;
@@ -112,6 +121,8 @@ export interface Employee {
 type View = 'dashboard' | 'assets' | 'add-asset' | 'asset-detail' | 'organizations' | 'add-organization' | 'organization-detail' | 'employees' | 'add-employee' | 'employee-detail' | 'reports' | 'settings' | 'asset-requests' | 'organization-admins';
 
 export default function App() {
+  const [user, setUser] = useState<User | null>(null);
+  const [showProfile, setShowProfile] = useState(false);
   const [currentView, setCurrentView] = useState<'dashboard' | 'assets' | 'add-asset' | 'asset-detail' | 'organizations' | 'add-organization' | 'organization-detail' | 'employees' | 'add-employee' | 'employee-detail' | 'reports' | 'settings' | 'asset-requests' | 'organization-admins'>('dashboard');
   const [editingAsset, setEditingAsset] = useState<Asset | null>(null);
   const [editingOrganization, setEditingOrganization] = useState<Organization | null>(null);
@@ -121,7 +132,6 @@ export default function App() {
   const [showAssetModal, setShowAssetModal] = useState(false);
   const [showOrganizationModal, setShowOrganizationModal] = useState(false);
   const [showEmployeeModal, setShowEmployeeModal] = useState(false);
-  
   const [assets, setAssets] = useState<Asset[]>([
     {
       id: '1',
@@ -506,6 +516,34 @@ export default function App() {
     }
   ]);
 
+  useEffect(() => {
+    const userCookie = document.cookie
+      .split('; ')
+      .find(row => row.startsWith('user='));
+    
+    if (userCookie) {
+      const userData = JSON.parse(decodeURIComponent(userCookie.split('=')[1]));
+      setUser(userData);
+    } else {
+      window.location.href = '/login';
+    }
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', {
+        method: 'POST',
+      });
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+    
+    document.cookie = 'user=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+    window.location.href = '/login';
+  };
+
+  if (!user) return <div>Loading...</div>;
+
   const handleAddAsset = (asset: Omit<Asset, 'id'>) => {
     const newAsset = {
       ...asset,
@@ -691,74 +729,96 @@ export default function App() {
           All Assets
         </NavButton>
         
-        <NavButton
-          onClick={() => {
-            setCurrentView('organizations');
-            setEditingAsset(null);
-          }}
-          isActive={currentView === 'organizations' || currentView === 'organization-detail'}
-          icon={<Building2 className="w-5 h-5" />}
-        >
-          Organizations
-        </NavButton>
-        
-        <NavButton
-          onClick={() => {
-            setCurrentView('employees');
-            setEditingAsset(null);
-          }}
-          isActive={currentView === 'employees' || currentView === 'employee-detail'}
-          icon={<UserCircle className="w-5 h-5" />}
-        >
-          Employees
-        </NavButton>
-        
-        <NavButton
-          onClick={() => {
-            setCurrentView('organization-admins');
-            setEditingAsset(null);
-          }}
-          isActive={currentView === 'organization-admins'}
-          icon={<Building2 className="w-5 h-5" />}
-        >
-          Organization Admins
-        </NavButton>
-        
-        <NavButton
-          onClick={() => {
-            setCurrentView('asset-requests');
-            setEditingAsset(null);
-          }}
-          isActive={currentView === 'asset-requests'}
-          icon={<FileText className="w-5 h-5" />}
-        >
-          Asset Requests
-        </NavButton>
-        
-        <NavButton
-          onClick={() => {
-            setCurrentView('reports');
-            setEditingAsset(null);
-          }}
-          isActive={currentView === 'reports'}
-          icon={<BarChart3 className="w-5 h-5" />}
-        >
-          Reports
-        </NavButton>
-        
-        <NavButton
-          onClick={() => {
-            setCurrentView('settings');
-            setEditingAsset(null);
-          }}
-          isActive={currentView === 'settings'}
-          icon={<SettingsIcon className="w-5 h-5" />}
-        >
-          Settings
-        </NavButton>
+        {/* Admin-only menu items */}
+        {user.role === 'admin' && (
+          <>
+            <NavButton
+              onClick={() => {
+                setCurrentView('organizations');
+                setEditingAsset(null);
+              }}
+              isActive={currentView === 'organizations' || currentView === 'organization-detail'}
+              icon={<Building2 className="w-5 h-5" />}
+            >
+              Organizations
+            </NavButton>
+            
+            <NavButton
+              onClick={() => {
+                setCurrentView('organization-admins');
+                setEditingAsset(null);
+              }}
+              isActive={currentView === 'organization-admins'}
+              icon={<Building2 className="w-5 h-5" />}
+            >
+              Organization Admins
+            </NavButton>
+            
+            <NavButton
+              onClick={() => {
+                setCurrentView('asset-requests');
+                setEditingAsset(null);
+              }}
+              isActive={currentView === 'asset-requests'}
+              icon={<FileText className="w-5 h-5" />}
+            >
+              Asset Requests
+            </NavButton>
+            
+            <NavButton
+              onClick={() => {
+                setCurrentView('reports');
+                setEditingAsset(null);
+              }}
+              isActive={currentView === 'reports'}
+              icon={<BarChart3 className="w-5 h-5" />}
+            >
+              Reports
+            </NavButton>
+            
+            <NavButton
+              onClick={() => {
+                setCurrentView('settings');
+                setEditingAsset(null);
+              }}
+              isActive={currentView === 'settings'}
+              icon={<SettingsIcon className="w-5 h-5" />}
+            >
+              Settings
+            </NavButton>
+          </>
+        )}
       </Sidebar>
 
       <div className="ml-64 p-8">
+        {/* Profile Icon */}
+        <div className="flex justify-end mb-4">
+          <div className="relative">
+            <button
+              onClick={() => setShowProfile(!showProfile)}
+              className="flex items-center space-x-2 text-gray-700 hover:text-blue-600"
+            >
+              <User className="w-8 h-8" />
+              <span>{user.name}</span>
+            </button>
+            {showProfile && (
+              <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+                <div className="px-4 py-2 text-sm text-gray-700 border-b">
+                  <div className="font-medium">{user.name}</div>
+                  <div className="text-gray-500">{user.email}</div>
+                  <div className="text-gray-500">Role: {user.role}</div>
+                </div>
+                <button
+                  onClick={handleLogout}
+                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  Log out
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+
         {currentView === 'dashboard' && <Dashboard assets={assets} />}
         {currentView === 'assets' && (
           <AssetList 
@@ -774,6 +834,7 @@ export default function App() {
               setEditingAsset(asset);
               setCurrentView('asset-detail');
             }}
+            userRole={user.role}
           />
         )}
         {currentView === 'add-asset' && (
@@ -801,93 +862,80 @@ export default function App() {
               setCurrentView('add-asset');
             }}
             onReassign={handleReassignAsset}
+            userRole={user.role}
           />
         )}
-        {currentView === 'organizations' && (
-          <OrganizationList 
-            organizations={organizations}
-            onEdit={handleEditOrganization}
-            onDelete={handleDeleteOrganization}
-            onAddNew={() => {
-              setEditingOrganization(null);
-              setShowOrganizationModal(true);
-            }}
-            onViewDetails={(org) => {
-              setSelectedOrganization(org);
-              setCurrentView('organization-detail');
-            }}
-          />
+        {/* Admin-only content */}
+        {user.role === 'admin' && (
+          <>
+            {currentView === 'organizations' && (
+              <OrganizationList 
+                organizations={organizations}
+                onEdit={handleEditOrganization}
+                onDelete={handleDeleteOrganization}
+                onAddNew={() => {
+                  setEditingOrganization(null);
+                  setShowOrganizationModal(true);
+                }}
+                onViewDetails={(org) => {
+                  setSelectedOrganization(org);
+                  setCurrentView('organization-detail');
+                }}
+              />
+            )}
+            {currentView === 'add-organization' && (
+              <OrganizationForm 
+                onSubmit={editingOrganization ? handleUpdateOrganization : handleAddOrganization}
+                initialData={editingOrganization}
+                onCancel={() => {
+                  if (editingOrganization && selectedOrganization) {
+                    setCurrentView('organization-detail');
+                  } else {
+                    setCurrentView('organizations');
+                  }
+                  setEditingOrganization(null);
+                }}
+              />
+            )}
+            {currentView === 'organization-detail' && selectedOrganization && (
+              <OrganizationDetail 
+                organization={selectedOrganization}
+                subAdmins={subAdmins}
+                onBack={() => {
+                  setCurrentView('organizations');
+                  setSelectedOrganization(null);
+                }}
+                onAddAdmin={handleAddSubAdmin}
+                onUpdateAdmin={handleUpdateSubAdmin}
+                onDeleteAdmin={handleDeleteSubAdmin}
+                onEditOrganization={() => {
+                  setEditingOrganization(selectedOrganization);
+                  setCurrentView('add-organization');
+                }}
+              />
+            )}
+            {currentView === 'asset-requests' && (
+              <AssetRequests 
+                employees={employees}
+                organizations={organizations}
+                assetRequests={assetRequests}
+                onAddRequest={handleAddAssetRequest}
+                onUpdateRequest={handleUpdateAssetRequest}
+              />
+            )}
+            {currentView === 'organization-admins' && (
+              <OrganizationAdminList 
+                subAdmins={subAdmins}
+                organizations={organizations}
+                onAdd={handleAddSubAdmin}
+                onUpdate={handleUpdateSubAdmin}
+                onDelete={handleDeleteSubAdmin}
+              />
+            )}
+            {currentView === 'reports' && <Reports assets={assets} organizations={organizations} />}
+            {currentView === 'settings' && <Settings />}
+          </>
         )}
-        {currentView === 'add-organization' && (
-          <OrganizationForm 
-            onSubmit={editingOrganization ? handleUpdateOrganization : handleAddOrganization}
-            initialData={editingOrganization}
-            onCancel={() => {
-              if (editingOrganization && selectedOrganization) {
-                setCurrentView('organization-detail');
-              } else {
-                setCurrentView('organizations');
-              }
-              setEditingOrganization(null);
-            }}
-          />
-        )}
-        {currentView === 'organization-detail' && selectedOrganization && (
-          <OrganizationDetail 
-            organization={selectedOrganization}
-            subAdmins={subAdmins}
-            onBack={() => {
-              setCurrentView('organizations');
-              setSelectedOrganization(null);
-            }}
-            onAddAdmin={handleAddSubAdmin}
-            onUpdateAdmin={handleUpdateSubAdmin}
-            onDeleteAdmin={handleDeleteSubAdmin}
-            onEditOrganization={() => {
-              setEditingOrganization(selectedOrganization);
-              setCurrentView('add-organization');
-            }}
-          />
-        )}
-        {currentView === 'employees' && (
-          <EmployeeList 
-            employees={employees}
-            organizations={organizations}
-            onViewDetails={handleViewEmployeeDetails}
-          />
-        )}
-
-        {currentView === 'employee-detail' && selectedEmployee && (
-          <EmployeeDetail 
-            employee={selectedEmployee}
-            organization={organizations.find(o => o.id === selectedEmployee.organizationId)}
-            assignedAssets={getEmployeeAssets(selectedEmployee.name)}
-            onBack={() => {
-              setCurrentView('employees');
-              setSelectedEmployee(null);
-            }}
-          />
-        )}
-        {currentView === 'asset-requests' && (
-          <AssetRequests 
-            employees={employees}
-            organizations={organizations}
-            assetRequests={assetRequests}
-            onAddRequest={handleAddAssetRequest}
-            onUpdateRequest={handleUpdateAssetRequest}
-          />
-        )}
-        {currentView === 'organization-admins' && (
-          <OrganizationAdminList 
-            subAdmins={subAdmins}
-            organizations={organizations}
-            onAdd={handleAddSubAdmin}
-            onUpdate={handleUpdateSubAdmin}
-            onDelete={handleDeleteSubAdmin}
-          />
-        )}
-        {currentView === 'reports' && <Reports assets={assets} organizations={organizations} />}
-        {currentView === 'settings' && <Settings />}
       </div>
 
       {/* Asset Modal */}

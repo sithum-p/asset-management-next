@@ -10,9 +10,10 @@ interface AssetListProps {
   onDelete: (id: string) => void;
   onAddNew: () => void;
   onViewDetails: (asset: Asset) => void;
+  userRole?: string;
 }
 
-export function AssetList({ assets, organizations, onEdit, onDelete, onAddNew, onViewDetails }: AssetListProps) {
+export function AssetList({ assets, organizations, onEdit, onDelete, onAddNew, onViewDetails, userRole = 'admin' }: AssetListProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState('all');
   const [filterStatus, setFilterStatus] = useState('all');
@@ -85,13 +86,15 @@ export function AssetList({ assets, organizations, onEdit, onDelete, onAddNew, o
           <h2 className="text-2xl text-gray-900 mb-2">Asset Management</h2>
           <p className="text-gray-600">Manage and track all your assets</p>
         </div>
-        <button
-          onClick={onAddNew}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-        >
-          <Plus className="w-5 h-5" />
-          Add Asset
-        </button>
+        {userRole === 'admin' && (
+          <button
+            onClick={onAddNew}
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            <Plus className="w-5 h-5" />
+            Add Asset
+          </button>
+        )}
       </div>
 
       <div className="bg-white rounded-lg p-6 border border-gray-200 mb-6">
@@ -318,24 +321,28 @@ export function AssetList({ assets, organizations, onEdit, onDelete, onAddNew, o
                     >
                       <Eye className="w-4 h-4" />
                     </button>
-                    <button
-                      onClick={() => onEdit(asset)}
-                      className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                      title="Edit"
-                    >
-                      <Edit2 className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => {
-                        if (confirm(`Are you sure you want to delete ${asset.name}?`)) {
-                          onDelete(asset.id);
-                        }
-                      }}
-                      className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                      title="Delete"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                    {userRole === 'admin' && (
+                      <>
+                        <button
+                          onClick={() => onEdit(asset)}
+                          className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                          title="Edit"
+                        >
+                          <Edit2 className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => {
+                            if (confirm(`Are you sure you want to delete ${asset.name}?`)) {
+                              onDelete(asset.id);
+                            }
+                          }}
+                          className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          title="Delete"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </>
+                    )}
                   </div>
                 </TableCell>
               </TableRow>

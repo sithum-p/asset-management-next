@@ -13,9 +13,10 @@ interface AssetDetailProps {
   onBack: () => void;
   onEdit: () => void;
   onReassign: (assetId: string, newEmployeeName: string | undefined, oldEmployeeName: string | undefined) => void;
+  userRole?: string;
 }
 
-export function AssetDetail({ asset, organization, assignedEmployee, employees, onBack, onEdit, onReassign }: AssetDetailProps) {
+export function AssetDetail({ asset, organization, assignedEmployee, employees, onBack, onEdit, onReassign, userRole = 'admin' }: AssetDetailProps) {
   const depreciation = calculateDepreciation(asset);
   const [showReassignModal, setShowReassignModal] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | undefined>(assignedEmployee);
@@ -71,13 +72,15 @@ export function AssetDetail({ asset, organization, assignedEmployee, employees, 
             <span className={`px-4 py-2 rounded-full text-sm ${getStatusColor(asset.status)}`}>
               {getStatusIcon(asset.status)} {asset.status.charAt(0).toUpperCase() + asset.status.slice(1)}
             </span>
-            <button
-              onClick={onEdit}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              <Edit2 className="w-4 h-4" />
-              Edit Asset
-            </button>
+            {userRole === 'admin' && (
+              <button
+                onClick={onEdit}
+                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                <Edit2 className="w-4 h-4" />
+                Edit Asset
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -336,30 +339,32 @@ export function AssetDetail({ asset, organization, assignedEmployee, employees, 
             <div className="bg-white rounded-lg border border-gray-200 p-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg text-gray-900">Assignment Information</h3>
-                <div className="flex gap-2">
-                  {asset.assignedTo && (
+                {userRole === 'admin' && (
+                  <div className="flex gap-2">
+                    {asset.assignedTo && (
+                      <button
+                        onClick={() => {
+                          setSelectedEmployee(undefined);
+                          setShowReassignModal(true);
+                        }}
+                        className="flex items-center gap-2 px-3 py-2 text-sm bg-red-50 text-red-600 border border-red-200 rounded-lg hover:bg-red-100 transition-colors"
+                      >
+                        <UserX className="w-4 h-4" />
+                        Unassign
+                      </button>
+                    )}
                     <button
                       onClick={() => {
-                        setSelectedEmployee(undefined);
+                        setSelectedEmployee(assignedEmployee);
                         setShowReassignModal(true);
                       }}
-                      className="flex items-center gap-2 px-3 py-2 text-sm bg-red-50 text-red-600 border border-red-200 rounded-lg hover:bg-red-100 transition-colors"
+                      className="flex items-center gap-2 px-3 py-2 text-sm bg-blue-50 text-blue-600 border border-blue-200 rounded-lg hover:bg-blue-100 transition-colors"
                     >
-                      <UserX className="w-4 h-4" />
-                      Unassign
+                      <UserPlus className="w-4 h-4" />
+                      {asset.assignedTo ? 'Reassign' : 'Assign'}
                     </button>
-                  )}
-                  <button
-                    onClick={() => {
-                      setSelectedEmployee(assignedEmployee);
-                      setShowReassignModal(true);
-                    }}
-                    className="flex items-center gap-2 px-3 py-2 text-sm bg-blue-50 text-blue-600 border border-blue-200 rounded-lg hover:bg-blue-100 transition-colors"
-                  >
-                    <UserPlus className="w-4 h-4" />
-                    {asset.assignedTo ? 'Reassign' : 'Assign'}
-                  </button>
-                </div>
+                  </div>
+                )}
               </div>
               <div className="flex items-start gap-4">
                 <div className="p-3 bg-blue-100 rounded-full">
@@ -388,16 +393,18 @@ export function AssetDetail({ asset, organization, assignedEmployee, employees, 
             <div className="bg-white rounded-lg border border-gray-200 p-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg text-gray-900">Assignment Information</h3>
-                <button
-                  onClick={() => {
-                    setSelectedEmployee(undefined);
-                    setShowReassignModal(true);
-                  }}
-                  className="flex items-center gap-2 px-3 py-2 text-sm bg-blue-50 text-blue-600 border border-blue-200 rounded-lg hover:bg-blue-100 transition-colors"
-                >
-                  <UserPlus className="w-4 h-4" />
-                  Assign Employee
-                </button>
+                {userRole === 'admin' && (
+                  <button
+                    onClick={() => {
+                      setSelectedEmployee(undefined);
+                      setShowReassignModal(true);
+                    }}
+                    className="flex items-center gap-2 px-3 py-2 text-sm bg-blue-50 text-blue-600 border border-blue-200 rounded-lg hover:bg-blue-100 transition-colors"
+                  >
+                    <UserPlus className="w-4 h-4" />
+                    Assign Employee
+                  </button>
+                )}
               </div>
               <div className="flex items-center gap-3 text-gray-500 bg-gray-50 rounded-lg p-4">
                 <User className="w-5 h-5" />
