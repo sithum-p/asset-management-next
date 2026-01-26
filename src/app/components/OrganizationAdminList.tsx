@@ -31,7 +31,7 @@ export function OrganizationAdminList({ subAdmins, organizations, onAdd, onUpdat
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    role: 'sub-admin' as 'sub-admin',
+    role: 'sub-admin' as 'admin' | 'sub-admin',
     organizationId: '',
     permissions: ['all'] as string[]
   });
