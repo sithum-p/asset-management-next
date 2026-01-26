@@ -1,7 +1,9 @@
 import { Asset, Organization, Employee } from '../page';
-import { ArrowLeft, Package, MapPin, Calendar, DollarSign, AlertCircle, User, Building2, Edit2, FileText, Clock, History, TrendingDown, UserX, UserPlus } from 'lucide-react';
+import { ArrowLeft, Package, MapPin, Calendar, DollarSign, AlertCircle, User, Building2, Edit2, FileText, Clock, History, TrendingDown, UserX, UserPlus, Download, X, Eye } from 'lucide-react';
 import { calculateDepreciation, formatCurrency } from '../utils/depreciation';
+import { generateAssetQRData, downloadQRCode } from '../utils/qrCode';
 import { useState } from 'react';
+import { QRCodeCanvas } from 'qrcode.react';
 
 interface AssetDetailProps {
   asset: Asset;
@@ -17,6 +19,8 @@ export function AssetDetail({ asset, organization, assignedEmployee, employees, 
   const depreciation = calculateDepreciation(asset);
   const [showReassignModal, setShowReassignModal] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | undefined>(assignedEmployee);
+  const [showQRModal, setShowQRModal] = useState(false);
+  const qrCodeData = generateAssetQRData(asset.id, asset.name, asset.category, asset.location, asset.status);
   
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -149,7 +153,177 @@ export function AssetDetail({ asset, organization, assignedEmployee, employees, 
             </div>
           </div>
 
-          {/* Description Card */}
+          {/* QR Code Card */}
+          <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg text-gray-900">Asset QR Code</h3>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setShowQRModal(true)}
+                  className="flex items-center gap-2 px-3 py-1 text-sm bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors"
+                  title="View QR Code"
+                >
+                  <Eye className="w-4 h-4" />
+                  View
+                </button>
+                <button
+                  onClick={() => downloadQRCode('qr-code-container', asset.name)}
+                  className="flex items-center gap-2 px-3 py-1 text-sm bg-green-50 text-green-600 rounded-lg hover:bg-green-100 transition-colors"
+                  title="Download QR Code"
+                >
+                  <Download className="w-4 h-4" />
+                  Download
+                </button>
+              </div>
+            </div>
+            <div className="flex justify-center p-4 bg-gray-50 rounded-lg" id="qr-code-container">
+              <QRCodeCanvas
+                value={qrCodeData}
+                size={200}
+                level="H"
+                includeMargin={true}
+              />
+            </div>
+            <p className="text-xs text-gray-500 mt-3 text-center">
+              Scan this QR code to quickly identify and track this asset
+            </p>
+          </div>
+          {/* Category Specifications */}
+          {asset.category && (
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
+              <h3 className="text-lg text-gray-900 mb-4">Specifications</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* PC/Laptop Specifications */}
+                {(asset.category === 'PC/Laptop' || asset.category === 'Electronics' || asset.category === 'Computer') && (
+                  <>
+                    {(asset as any).brand && (
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">Brand</p>
+                        <p className="text-sm text-gray-900">{(asset as any).brand}</p>
+                      </div>
+                    )}
+                    {(asset as any).model && (
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">Model</p>
+                        <p className="text-sm text-gray-900">{(asset as any).model}</p>
+                      </div>
+                    )}
+                    {(asset as any).serialNumber && (
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">Serial Number</p>
+                        <p className="text-sm text-gray-900">{(asset as any).serialNumber}</p>
+                      </div>
+                    )}
+                    {(asset as any).processor && (
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">Processor</p>
+                        <p className="text-sm text-gray-900">{(asset as any).processor}</p>
+                      </div>
+                    )}
+                    {(asset as any).ram && (
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">RAM</p>
+                        <p className="text-sm text-gray-900">{(asset as any).ram}</p>
+                      </div>
+                    )}
+                    {(asset as any).storage && (
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">Storage</p>
+                        <p className="text-sm text-gray-900">{(asset as any).storage}</p>
+                      </div>
+                    )}
+                    {(asset as any).operatingSystem && (
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">Operating System</p>
+                        <p className="text-sm text-gray-900">{(asset as any).operatingSystem}</p>
+                      </div>
+                    )}
+                    {(asset as any).macAddress && (
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">MAC Address</p>
+                        <p className="text-sm text-gray-900 font-mono">{(asset as any).macAddress}</p>
+                      </div>
+                    )}
+                    {(asset as any).warrantyEndDate && (
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">Warranty End Date</p>
+                        <p className="text-sm text-gray-900">{new Date((asset as any).warrantyEndDate).toLocaleDateString()}</p>
+                      </div>
+                    )}
+                  </>
+                )}
+
+                {/* Furniture Specifications */}
+                {(asset.category === 'Furniture' || asset.category === 'Office Furniture') && (
+                  <>
+                    {(asset as any).material && (
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">Material</p>
+                        <p className="text-sm text-gray-900">{(asset as any).material}</p>
+                      </div>
+                    )}
+                    {(asset as any).color && (
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">Color</p>
+                        <p className="text-sm text-gray-900">{(asset as any).color}</p>
+                      </div>
+                    )}
+                    {(asset as any).dimensions && (
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">Dimensions</p>
+                        <p className="text-sm text-gray-900">{(asset as any).dimensions}</p>
+                      </div>
+                    )}
+                  </>
+                )}
+
+                {/* Vehicle Specifications */}
+                {(asset.category === 'Vehicle' || asset.category === 'Vehicles' || asset.category === 'Car') && (
+                  <>
+                    {(asset as any).vehicleType && (
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">Vehicle Type</p>
+                        <p className="text-sm text-gray-900">{(asset as any).vehicleType}</p>
+                      </div>
+                    )}
+                    {(asset as any).registrationNumber && (
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">Registration Number</p>
+                        <p className="text-sm text-gray-900">{(asset as any).registrationNumber}</p>
+                      </div>
+                    )}
+                    {(asset as any).fuelType && (
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">Fuel Type</p>
+                        <p className="text-sm text-gray-900">{(asset as any).fuelType}</p>
+                      </div>
+                    )}
+                    {(asset as any).mileage && (
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">Mileage (km)</p>
+                        <p className="text-sm text-gray-900">{(asset as any).mileage}</p>
+                      </div>
+                    )}
+                  </>
+                )}
+
+                {/* Common Specifications */}
+                {(asset as any).condition && (
+                  <div>
+                    <p className="text-xs text-gray-500 mb-1">Condition</p>
+                    <p className="text-sm text-gray-900">{(asset as any).condition}</p>
+                  </div>
+                )}
+                {(asset as any).lastMaintenanceDate && (
+                  <div>
+                    <p className="text-xs text-gray-500 mb-1">Last Maintenance Date</p>
+                    <p className="text-sm text-gray-900">{new Date((asset as any).lastMaintenanceDate).toLocaleDateString()}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
           {asset.description && (
             <div className="bg-white rounded-lg border border-gray-200 p-6">
               <h3 className="text-lg text-gray-900 mb-3">Description</h3>
@@ -543,6 +717,66 @@ export function AssetDetail({ asset, organization, assignedEmployee, employees, 
               >
                 <UserPlus className="w-4 h-4" />
                 {selectedEmployee ? 'Reassign' : 'Unassign'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* QR Code Modal */}
+      {showQRModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg text-gray-900">Asset QR Code</h3>
+              <button
+                onClick={() => setShowQRModal(false)}
+                className="p-1 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <X className="w-5 h-5 text-gray-600" />
+              </button>
+            </div>
+            
+            <div className="bg-gray-50 rounded-lg p-6 flex justify-center mb-4" id="modal-qr-code">
+              <QRCodeCanvas
+                value={qrCodeData}
+                size={300}
+                level="H"
+                includeMargin={true}
+              />
+            </div>
+
+            <div className="space-y-2 mb-6 text-sm">
+              <p className="text-gray-600">
+                <strong>Asset:</strong> {asset.name}
+              </p>
+              <p className="text-gray-600">
+                <strong>Asset ID:</strong> #{asset.id}
+              </p>
+              <p className="text-gray-600">
+                <strong>Category:</strong> {asset.category}
+              </p>
+              <p className="text-gray-600">
+                <strong>Location:</strong> {asset.location}
+              </p>
+              <p className="text-gray-600">
+                <strong>Status:</strong> {asset.status}
+              </p>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => downloadQRCode('modal-qr-code', asset.name)}
+                className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+              >
+                <Download className="w-4 h-4" />
+                Download
+              </button>
+              <button
+                onClick={() => setShowQRModal(false)}
+                className="flex-1 px-4 py-2 bg-gray-200 text-gray-900 rounded-lg hover:bg-gray-300 transition-colors"
+              >
+                Close
               </button>
             </div>
           </div>

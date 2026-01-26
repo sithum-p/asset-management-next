@@ -94,7 +94,7 @@ export function Reports({ assets, organizations }: ReportsProps) {
             </div>
             <div>
               <p className="text-sm text-gray-600">Total Value</p>
-              <p className="text-2xl text-gray-900">${totalValue.toLocaleString()}</p>
+              <p className="text-2xl text-gray-900">₨{totalValue.toLocaleString()}</p>
             </div>
           </div>
         </div>

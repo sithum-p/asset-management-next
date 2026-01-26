@@ -20,13 +20,14 @@ interface EmployeeDashboardProps {
 
 export function EmployeeDashboard({ employee }: EmployeeDashboardProps) {
   const myAssets = [
-    { id: '1', name: 'Dell Laptop XPS 15', category: 'Electronics', status: 'active', value: 1500 },
-    { id: '2', name: 'Office Desk', category: 'Furniture', status: 'active', value: 350 }
+    { id: '1', name: 'Dell Latitude 5540', category: 'PC/Laptop', status: 'active', value: 150000 },
+    { id: '2', name: 'Ergonomic Office Chair', category: 'Office Furniture', status: 'active', value: 25000 },
+    { id: '3', name: 'Dell U2723DE Monitor', category: 'Office Equipment', status: 'active', value: 85000 }
   ];
 
   const myRequests = [
-    { id: '1', assetName: 'iPad Pro 12.9"', status: 'pending', requestDate: '2024-12-10' },
-    { id: '2', assetName: 'Standing Desk', status: 'approved', requestDate: '2024-12-08' }
+    { id: '1', assetName: 'Dell Latitude 5540', status: 'approved', requestDate: '2025-01-15' },
+    { id: '2', assetName: 'Company Van', status: 'pending', requestDate: '2025-01-12' }
   ];
 
   const totalAssetValue = myAssets.reduce((sum, asset) => sum + asset.value, 0);

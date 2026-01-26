@@ -13,32 +13,32 @@ export function MyAssets({ employee }: MyAssetsProps) {
   const myAssets = [
     {
       id: '1',
-      name: 'Dell Laptop XPS 15',
-      category: 'Electronics',
+      name: 'Dell Latitude 5540',
+      category: 'PC/Laptop',
       status: 'active',
       location: 'Office - Floor 2',
       purchaseDate: '2024-01-15',
-      value: 1500,
+      value: 150000,
       description: 'High-performance laptop for development'
     },
     {
       id: '2',
-      name: 'Office Desk',
-      category: 'Furniture',
+      name: 'Ergonomic Office Chair',
+      category: 'Office Furniture',
       status: 'active',
       location: 'Office - Floor 1',
       purchaseDate: '2023-06-20',
-      value: 350
+      value: 25000
     },
     {
-      id: '7',
-      name: 'Logitech Wireless Mouse',
-      category: 'Electronics',
-      status: 'lost',
-      location: 'Unknown',
-      purchaseDate: '2023-08-15',
-      value: 45,
-      description: 'Wireless mouse - reported missing'
+      id: '3',
+      name: 'Dell U2723DE Monitor',
+      category: 'Office Equipment',
+      status: 'active',
+      location: 'Office - Floor 2',
+      purchaseDate: '2024-03-20',
+      value: 85000,
+      description: 'Dual monitor for productivity'
     }
   ];
 

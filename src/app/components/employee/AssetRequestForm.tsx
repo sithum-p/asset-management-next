@@ -94,11 +94,13 @@ export function AssetRequestForm({ employee }: AssetRequestFormProps) {
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
               >
                 <option value="">Select Category</option>
-                <option value="Electronics">Electronics</option>
-                <option value="Furniture">Furniture</option>
-                <option value="Office Supplies">Office Supplies</option>
-                <option value="Equipment">Equipment</option>
-                <option value="Vehicles">Vehicles</option>
+                <option value="PC/Laptop">PC / Laptop</option>
+                <option value="Office Furniture">Office Furniture</option>
+                <option value="Office Equipment">Office Equipment</option>
+                <option value="Networking Equipment">Networking Equipment</option>
+                <option value="Servers">Servers</option>
+                <option value="Vehicle">Vehicle</option>
+                <option value="Machinery">Machinery & Equipment</option>
                 <option value="Other">Other</option>
               </select>
             </div>

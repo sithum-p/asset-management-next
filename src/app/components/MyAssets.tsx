@@ -13,32 +13,55 @@ export function MyAssets({ employee }: MyAssetsProps) {
   const myAssets = [
     {
       id: '1',
-      name: 'Dell Laptop XPS 15',
-      category: 'Electronics',
+      name: 'Dell Latitude 5540',
+      category: 'PC/Laptop',
       status: 'active',
       location: 'Office - Floor 2',
       purchaseDate: '2024-01-15',
-      value: 1500,
-      description: 'High-performance laptop for development'
+      value: 150000,
+      description: 'High-performance laptop for development',
+      brand: 'Dell',
+      model: 'Latitude 5540',
+      processor: 'Intel Core i7-13700H',
+      ram: '16GB DDR5',
+      storage: 'SSD 512GB NVMe',
+      operatingSystem: 'Windows 11 Pro',
+      macAddress: '00:1A:2B:3C:4D:5E'
     },
     {
       id: '2',
-      name: 'Office Desk',
-      category: 'Furniture',
+      name: 'Ergonomic Office Chair',
+      category: 'Office Furniture',
       status: 'active',
       location: 'Office - Floor 1',
       purchaseDate: '2023-06-20',
-      value: 350
+      value: 25000,
+      material: 'Leather',
+      color: 'Black',
+      dimensions: '65cm x 65cm x 120cm'
     },
     {
-      id: '7',
-      name: 'Logitech Wireless Mouse',
-      category: 'Electronics',
-      status: 'lost',
-      location: 'Unknown',
-      purchaseDate: '2023-08-15',
-      value: 45,
-      description: 'Wireless mouse - reported missing'
+      id: '3',
+      name: 'Company Van',
+      category: 'Vehicle',
+      status: 'active',
+      location: 'Parking - Building A',
+      purchaseDate: '2022-11-10',
+      value: 2500000,
+      vehicleType: 'Van',
+      registrationNumber: 'WP-ABC-1234',
+      fuelType: 'Diesel',
+      mileage: '45000'
+    },
+    {
+      id: '4',
+      name: 'Dell U2723DE Monitor',
+      category: 'Office Equipment',
+      status: 'active',
+      location: 'Office - Floor 2',
+      purchaseDate: '2024-03-20',
+      value: 85000,
+      description: 'Dual monitors for enhanced productivity'
     }
   ];
 

@@ -89,7 +89,7 @@ export function Reports({ assets, organizations }: ReportsProps) {
             </div>
             <div>
               <p className="text-sm text-gray-600">Total Value</p>
-              <p className="text-2xl text-gray-900">${totalValue.toLocaleString()}</p>
+              <p className="text-2xl text-gray-900">₨{totalValue.toLocaleString()}</p>
             </div>
           </div>
         </div>
@@ -171,7 +171,7 @@ export function Reports({ assets, organizations }: ReportsProps) {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-xs text-gray-500">Total Value</span>
-                  <span className="text-xs text-gray-700">${org.value.toLocaleString()}</span>
+                  <span className="text-xs text-gray-700">₨{org.value.toLocaleString()}</span>
                 </div>
               </div>
             ))}

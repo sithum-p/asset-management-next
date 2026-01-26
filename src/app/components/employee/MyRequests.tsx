@@ -13,33 +13,53 @@ export function MyRequests({ employee }: MyRequestsProps) {
   const myRequests = [
     {
       id: '1',
-      assetName: 'iPad Pro 12.9"',
-      category: 'Electronics',
+      assetName: 'Dell Latitude 5540',
+      category: 'PC/Laptop',
       quantity: 1,
-      reason: 'Need for presentations and client meetings',
+      reason: 'Replacement for aging laptop - specs needed: i7 processor, 16GB RAM, 512GB SSD',
       priority: 'high',
       status: 'pending',
-      requestDate: '2024-12-10'
+      requestDate: '2025-01-18'
     },
     {
       id: '2',
-      assetName: 'Standing Desk',
-      category: 'Furniture',
+      assetName: 'Ergonomic Office Chair',
+      category: 'Office Furniture',
       quantity: 1,
-      reason: 'Health and ergonomic improvements',
+      reason: 'Back support improvement - need black leather material, height adjustable',
       priority: 'medium',
       status: 'approved',
-      requestDate: '2024-12-08'
+      requestDate: '2025-01-15'
     },
     {
       id: '3',
-      assetName: 'External Monitor',
-      category: 'Electronics',
+      assetName: 'Company Vehicle - Van',
+      category: 'Vehicle',
+      quantity: 1,
+      reason: 'Field service team transport - diesel van with cargo space',
+      priority: 'high',
+      status: 'pending',
+      requestDate: '2025-01-12'
+    },
+    {
+      id: '4',
+      assetName: 'Dell U2723DE Monitor',
+      category: 'Office Equipment',
       quantity: 2,
-      reason: 'Dual monitor setup for development work',
+      reason: 'Dual monitor setup for development workflow optimization',
+      priority: 'medium',
+      status: 'approved',
+      requestDate: '2025-01-10'
+    },
+    {
+      id: '5',
+      assetName: 'Cisco Networking Switch',
+      category: 'Networking Equipment',
+      quantity: 1,
+      reason: 'Network infrastructure upgrade for better connectivity',
       priority: 'medium',
       status: 'rejected',
-      requestDate: '2024-12-05'
+      requestDate: '2025-01-08'
     }
   ];
 

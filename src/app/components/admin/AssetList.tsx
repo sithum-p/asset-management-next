@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Asset, Organization } from '../../page';
-import { Search, Filter, Edit2, Trash2, MapPin, Calendar, DollarSign, Building2, Plus, Package } from 'lucide-react';
+import { Search, Filter, Edit2, Trash2, Plus, Package, Eye, ChevronDown } from 'lucide-react';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
 
 interface AssetListProps {
   assets: Asset[];
@@ -15,6 +16,18 @@ export function AssetList({ assets, organizations, onEdit, onDelete, onAddNew, o
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState('all');
   const [filterStatus, setFilterStatus] = useState('all');
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+  
+  // Category-specific filters
+  const [filterBrand, setFilterBrand] = useState('');
+  const [filterModel, setFilterModel] = useState('');
+  const [filterProcessor, setFilterProcessor] = useState('');
+  const [filterRam, setFilterRam] = useState('');
+  const [filterMaterial, setFilterMaterial] = useState('');
+  const [filterColor, setFilterColor] = useState('');
+  const [filterVehicleType, setFilterVehicleType] = useState('');
+  const [filterFuelType, setFilterFuelType] = useState('');
+  const [filterCondition, setFilterCondition] = useState('');
 
   const categories = ['all', ...Array.from(new Set(assets.map(a => a.category)))];
 
@@ -24,7 +37,29 @@ export function AssetList({ assets, organizations, onEdit, onDelete, onAddNew, o
                           (asset.assignedTo && asset.assignedTo.toLowerCase().includes(searchTerm.toLowerCase()));
     const matchesCategory = filterCategory === 'all' || asset.category === filterCategory;
     const matchesStatus = filterStatus === 'all' || asset.status === filterStatus;
-    return matchesSearch && matchesCategory && matchesStatus;
+    
+    // Category-specific filters
+    let matchesCategoryFilters = true;
+    if (filterCategory !== 'all') {
+      const assetData = asset as any;
+      if (['PC/Laptop', 'Electronics', 'Computer'].includes(filterCategory)) {
+        if (filterBrand && assetData.brand && !assetData.brand.toLowerCase().includes(filterBrand.toLowerCase())) matchesCategoryFilters = false;
+        if (filterModel && assetData.model && !assetData.model.toLowerCase().includes(filterModel.toLowerCase())) matchesCategoryFilters = false;
+        if (filterProcessor && assetData.processor && !assetData.processor.toLowerCase().includes(filterProcessor.toLowerCase())) matchesCategoryFilters = false;
+        if (filterRam && assetData.ram && !assetData.ram.toLowerCase().includes(filterRam.toLowerCase())) matchesCategoryFilters = false;
+      } else if (['Furniture', 'Office Furniture'].includes(filterCategory)) {
+        if (filterMaterial && assetData.material && !assetData.material.toLowerCase().includes(filterMaterial.toLowerCase())) matchesCategoryFilters = false;
+        if (filterColor && assetData.color && !assetData.color.toLowerCase().includes(filterColor.toLowerCase())) matchesCategoryFilters = false;
+      } else if (['Vehicle', 'Vehicles', 'Car'].includes(filterCategory)) {
+        if (filterVehicleType && assetData.vehicleType && !assetData.vehicleType.toLowerCase().includes(filterVehicleType.toLowerCase())) matchesCategoryFilters = false;
+        if (filterFuelType && assetData.fuelType && !assetData.fuelType.toLowerCase().includes(filterFuelType.toLowerCase())) matchesCategoryFilters = false;
+      }
+      
+      // Common filters
+      if (filterCondition && assetData.condition && !assetData.condition.toLowerCase().includes(filterCondition.toLowerCase())) matchesCategoryFilters = false;
+    }
+    
+    return matchesSearch && matchesCategory && matchesStatus && matchesCategoryFilters;
   });
 
   const getStatusColor = (status: string) => {
@@ -60,7 +95,7 @@ export function AssetList({ assets, organizations, onEdit, onDelete, onAddNew, o
       </div>
 
       <div className="bg-white rounded-lg p-6 border border-gray-200 mb-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
             <input
@@ -76,7 +111,18 @@ export function AssetList({ assets, organizations, onEdit, onDelete, onAddNew, o
             <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
             <select
               value={filterCategory}
-              onChange={(e) => setFilterCategory(e.target.value)}
+              onChange={(e) => {
+                setFilterCategory(e.target.value);
+                // Reset category-specific filters when category changes
+                setFilterBrand('');
+                setFilterModel('');
+                setFilterProcessor('');
+                setFilterRam('');
+                setFilterMaterial('');
+                setFilterColor('');
+                setFilterVehicleType('');
+                setFilterFuelType('');
+              }}
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none"
             >
               {categories.map(category => (
@@ -99,85 +145,203 @@ export function AssetList({ assets, organizations, onEdit, onDelete, onAddNew, o
             <option value="lost">Lost</option>
           </select>
         </div>
+
+        {/* Advanced Filters Toggle */}
+        <button
+          onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
+          className="flex items-center gap-2 text-blue-600 hover:text-blue-700 text-sm font-medium transition-colors"
+        >
+          <ChevronDown className={`w-4 h-4 transition-transform ${showAdvancedFilters ? 'rotate-180' : ''}`} />
+          {showAdvancedFilters ? 'Hide' : 'Show'} Advanced Filters
+        </button>
+
+        {/* Advanced Category-Specific Filters */}
+        {showAdvancedFilters && filterCategory !== 'all' && (
+          <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+            <h3 className="text-sm font-semibold text-gray-900 mb-3">{filterCategory} Specifications</h3>
+            
+            {/* PC/Laptop Filters */}
+            {['PC/Laptop', 'Electronics', 'Computer'].includes(filterCategory) && (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                <div>
+                  <label className="block text-xs text-gray-600 mb-1">Brand</label>
+                  <input
+                    type="text"
+                    placeholder="e.g., Dell, HP, Lenovo"
+                    value={filterBrand}
+                    onChange={(e) => setFilterBrand(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-600 mb-1">Model</label>
+                  <input
+                    type="text"
+                    placeholder="e.g., Latitude, Pavilion"
+                    value={filterModel}
+                    onChange={(e) => setFilterModel(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-600 mb-1">Processor</label>
+                  <input
+                    type="text"
+                    placeholder="e.g., Intel Core i7"
+                    value={filterProcessor}
+                    onChange={(e) => setFilterProcessor(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-600 mb-1">RAM</label>
+                  <input
+                    type="text"
+                    placeholder="e.g., 16GB, 8GB"
+                    value={filterRam}
+                    onChange={(e) => setFilterRam(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Furniture Filters */}
+            {['Furniture', 'Office Furniture'].includes(filterCategory) && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div>
+                  <label className="block text-xs text-gray-600 mb-1">Material</label>
+                  <input
+                    type="text"
+                    placeholder="e.g., Leather, Wood, Metal"
+                    value={filterMaterial}
+                    onChange={(e) => setFilterMaterial(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-600 mb-1">Color</label>
+                  <input
+                    type="text"
+                    placeholder="e.g., Black, White, Brown"
+                    value={filterColor}
+                    onChange={(e) => setFilterColor(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Vehicle Filters */}
+            {['Vehicle', 'Vehicles', 'Car'].includes(filterCategory) && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div>
+                  <label className="block text-xs text-gray-600 mb-1">Vehicle Type</label>
+                  <input
+                    type="text"
+                    placeholder="e.g., Car, Truck, Van"
+                    value={filterVehicleType}
+                    onChange={(e) => setFilterVehicleType(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-600 mb-1">Fuel Type</label>
+                  <input
+                    type="text"
+                    placeholder="e.g., Diesel, Petrol, Hybrid"
+                    value={filterFuelType}
+                    onChange={(e) => setFilterFuelType(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Common Filters */}
+            {filterCategory !== 'all' && (
+              <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs text-gray-600 mb-1">Condition</label>
+                  <input
+                    type="text"
+                    placeholder="e.g., Good, Fair, Poor"
+                    value={filterCondition}
+                    onChange={(e) => setFilterCondition(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-        {filteredAssets.map(asset => (
-          <div 
-            key={asset.id} 
-            className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
-            onClick={() => onViewDetails(asset)}
-          >
-            <div className="p-6">
-              <div className="flex items-start justify-between mb-4">
-                <div className="flex-1">
-                  <h3 className="text-lg text-gray-900 mb-2">{asset.name}</h3>
-                  <span className={`inline-block px-3 py-1 rounded-full text-sm ${getStatusColor(asset.status)}`}>
+      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+        <Table>
+          <TableHeader>
+            <TableRow className="bg-gray-50">
+              <TableHead className="font-semibold text-gray-900">Asset Name</TableHead>
+              <TableHead className="font-semibold text-gray-900">Category</TableHead>
+              <TableHead className="font-semibold text-gray-900">Location</TableHead>
+              <TableHead className="font-semibold text-gray-900">Status</TableHead>
+              <TableHead className="font-semibold text-gray-900">Purchase Date</TableHead>
+              <TableHead className="font-semibold text-gray-900">Value</TableHead>
+              <TableHead className="font-semibold text-gray-900">Assigned To</TableHead>
+              <TableHead className="font-semibold text-gray-900 text-right">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredAssets.map(asset => (
+              <TableRow 
+                key={asset.id} 
+                className="hover:bg-gray-50 cursor-pointer"
+                onClick={() => onViewDetails(asset)}
+              >
+                <TableCell className="font-medium text-gray-900">{asset.name}</TableCell>
+                <TableCell className="text-gray-600">{asset.category}</TableCell>
+                <TableCell className="text-gray-600">{asset.location}</TableCell>
+                <TableCell>
+                  <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(asset.status)}`}>
                     {asset.status}
                   </span>
-                </div>
-                <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
-                  <button
-                    onClick={() => onEdit(asset)}
-                    className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                  >
-                    <Edit2 className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => {
-                      if (confirm(`Are you sure you want to delete ${asset.name}?`)) {
-                        onDelete(asset.id);
-                      }
-                    }}
-                    className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                <div className="flex items-center gap-2 text-gray-600">
-                  <Filter className="w-4 h-4" />
-                  <span className="text-sm">{asset.category}</span>
-                </div>
-
-                <div className="flex items-center gap-2 text-gray-600">
-                  <MapPin className="w-4 h-4" />
-                  <span className="text-sm">{asset.location}</span>
-                </div>
-
-                <div className="flex items-center gap-2 text-gray-600">
-                  <Calendar className="w-4 h-4" />
-                  <span className="text-sm">{new Date(asset.purchaseDate).toLocaleDateString()}</span>
-                </div>
-
-                <div className="flex items-center gap-2 text-gray-600">
-                  <DollarSign className="w-4 h-4" />
-                  <span className="text-sm">${asset.value.toLocaleString()}</span>
-                </div>
-
-                {getOrganizationName(asset.organizationId) && (
-                  <div className="flex items-center gap-2 text-gray-600">
-                    <Building2 className="w-4 h-4" />
-                    <span className="text-sm">{getOrganizationName(asset.organizationId)}</span>
+                </TableCell>
+                <TableCell className="text-gray-600">{new Date(asset.purchaseDate).toLocaleDateString()}</TableCell>
+                <TableCell className="text-gray-600">₨{asset.value.toLocaleString()}</TableCell>
+                <TableCell className="text-gray-600">{asset.assignedTo || '-'}</TableCell>
+                <TableCell className="text-right">
+                  <div className="flex gap-2 justify-end" onClick={(e) => e.stopPropagation()}>
+                    <button
+                      onClick={() => onViewDetails(asset)}
+                      className="p-2 text-gray-600 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                      title="View"
+                    >
+                      <Eye className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => onEdit(asset)}
+                      className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                      title="Edit"
+                    >
+                      <Edit2 className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => {
+                        if (confirm(`Are you sure you want to delete ${asset.name}?`)) {
+                          onDelete(asset.id);
+                        }
+                      }}
+                      className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                      title="Delete"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
                   </div>
-                )}
-
-                {asset.assignedTo && (
-                  <div className="pt-3 border-t border-gray-200">
-                    <p className="text-sm text-gray-600">Assigned to:</p>
-                    <p className="text-sm text-gray-900">{asset.assignedTo}</p>
-                  </div>
-                )}
-
-                {asset.description && (
-                  <p className="text-sm text-gray-600 pt-2">{asset.description}</p>
-                )}
-              </div>
-            </div>
-          </div>
-        ))}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       </div>
 
       {filteredAssets.length === 0 && (
