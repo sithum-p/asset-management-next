@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Asset, Organization } from '../page';
-import { Search, Filter, Edit2, Trash2, MapPin, Calendar, DollarSign, Building2, Plus } from 'lucide-react';
+import { Search, Filter, Edit2, Trash2, Plus, Package, Eye } from 'lucide-react';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table';
 
 interface AssetListProps {
   assets: Asset[];
@@ -105,84 +106,72 @@ export function AssetList({ assets, organizations, onEdit, onDelete, onAddNew, o
         </div>
       </div>
 
-      {/* Asset Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-        {filteredAssets.map(asset => (
-          <div 
-            key={asset.id} 
-            className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
-            onClick={() => onViewDetails(asset)}
-          >
-            <div className="p-6">
-              <div className="flex items-start justify-between mb-4">
-                <div className="flex-1">
-                  <h3 className="text-lg text-gray-900 mb-2">{asset.name}</h3>
-                  <span className={`inline-block px-3 py-1 rounded-full text-sm ${getStatusColor(asset.status)}`}>
+      {/* Asset Table */}
+      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+        <Table>
+          <TableHeader>
+            <TableRow className="bg-gray-50">
+              <TableHead className="font-semibold text-gray-900">Asset Name</TableHead>
+              <TableHead className="font-semibold text-gray-900">Category</TableHead>
+              <TableHead className="font-semibold text-gray-900">Location</TableHead>
+              <TableHead className="font-semibold text-gray-900">Status</TableHead>
+              <TableHead className="font-semibold text-gray-900">Purchase Date</TableHead>
+              <TableHead className="font-semibold text-gray-900">Value</TableHead>
+              <TableHead className="font-semibold text-gray-900">Assigned To</TableHead>
+              <TableHead className="font-semibold text-gray-900 text-right">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredAssets.map(asset => (
+              <TableRow 
+                key={asset.id} 
+                className="hover:bg-gray-50 cursor-pointer"
+                onClick={() => onViewDetails(asset)}
+              >
+                <TableCell className="font-medium text-gray-900">{asset.name}</TableCell>
+                <TableCell className="text-gray-600">{asset.category}</TableCell>
+                <TableCell className="text-gray-600">{asset.location}</TableCell>
+                <TableCell>
+                  <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(asset.status)}`}>
                     {asset.status}
                   </span>
-                </div>
-                <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
-                  <button
-                    onClick={() => onEdit(asset)}
-                    className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                  >
-                    <Edit2 className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => {
-                      if (confirm(`Are you sure you want to delete ${asset.name}?`)) {
-                        onDelete(asset.id);
-                      }
-                    }}
-                    className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                <div className="flex items-center gap-2 text-gray-600">
-                  <Filter className="w-4 h-4" />
-                  <span className="text-sm">{asset.category}</span>
-                </div>
-
-                <div className="flex items-center gap-2 text-gray-600">
-                  <MapPin className="w-4 h-4" />
-                  <span className="text-sm">{asset.location}</span>
-                </div>
-
-                <div className="flex items-center gap-2 text-gray-600">
-                  <Calendar className="w-4 h-4" />
-                  <span className="text-sm">{new Date(asset.purchaseDate).toLocaleDateString()}</span>
-                </div>
-
-                <div className="flex items-center gap-2 text-gray-600">
-                  <DollarSign className="w-4 h-4" />
-                  <span className="text-sm">${asset.value.toLocaleString()}</span>
-                </div>
-
-                {getOrganizationName(asset.organizationId) && (
-                  <div className="flex items-center gap-2 text-gray-600">
-                    <Building2 className="w-4 h-4" />
-                    <span className="text-sm">{getOrganizationName(asset.organizationId)}</span>
+                </TableCell>
+                <TableCell className="text-gray-600">{new Date(asset.purchaseDate).toLocaleDateString()}</TableCell>
+                <TableCell className="text-gray-600">₨{asset.value.toLocaleString()}</TableCell>
+                <TableCell className="text-gray-600">{asset.assignedTo || '-'}</TableCell>
+                <TableCell className="text-right">
+                  <div className="flex gap-2 justify-end" onClick={(e) => e.stopPropagation()}>
+                    <button
+                      onClick={() => onViewDetails(asset)}
+                      className="p-2 text-gray-600 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                      title="View"
+                    >
+                      <Eye className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => onEdit(asset)}
+                      className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                      title="Edit"
+                    >
+                      <Edit2 className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => {
+                        if (confirm(`Are you sure you want to delete ${asset.name}?`)) {
+                          onDelete(asset.id);
+                        }
+                      }}
+                      className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                      title="Delete"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
                   </div>
-                )}
-
-                {asset.assignedTo && (
-                  <div className="pt-3 border-t border-gray-200">
-                    <p className="text-sm text-gray-600">Assigned to:</p>
-                    <p className="text-sm text-gray-900">{asset.assignedTo}</p>
-                  </div>
-                )}
-
-                {asset.description && (
-                  <p className="text-sm text-gray-600 pt-2">{asset.description}</p>
-                )}
-              </div>
-            </div>
-          </div>
-        ))}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       </div>
 
       {filteredAssets.length === 0 && (

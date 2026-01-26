@@ -11,16 +11,38 @@ interface AssetFormProps {
 
 export function AssetForm({ onSubmit, initialData, onCancel, organizations }: AssetFormProps) {
   const [formData, setFormData] = useState({
-    name: initialData?.name || '',
-    category: initialData?.category || '',
+    name: initialData?.name || 'Dell Latitude 5000',
+    category: initialData?.category || 'PC/Laptop',
     status: initialData?.status || 'active',
-    location: initialData?.location || '',
-    purchaseDate: initialData?.purchaseDate || '',
-    value: initialData?.value?.toString() || '',
-    depreciationRate: initialData?.depreciationRate?.toString() || '',
-    assignedTo: initialData?.assignedTo || '',
-    description: initialData?.description || '',
-    organizationId: initialData?.organizationId || ''
+    location: initialData?.location || 'Office - Floor 2',
+    purchaseDate: initialData?.purchaseDate || '2024-01-15',
+    value: initialData?.value?.toString() || '150000',
+    depreciationRate: initialData?.depreciationRate?.toString() || '20',
+    assignedTo: initialData?.assignedTo || 'John Doe',
+    description: initialData?.description || 'Business laptop for development',
+    organizationId: initialData?.organizationId || '',
+    // PC/Laptop Specifications
+    brand: initialData?.brand || 'Dell',
+    model: initialData?.model || 'Latitude 5000',
+    serialNumber: initialData?.serialNumber || 'SN-2024-00145',
+    processor: initialData?.processor || 'Intel Core i7-13700H',
+    ram: initialData?.ram || '16GB DDR5',
+    storage: initialData?.storage || 'SSD 512GB NVMe',
+    operatingSystem: initialData?.operatingSystem || 'Windows 11 Pro',
+    macAddress: initialData?.macAddress || '00:1A:2B:3C:4D:5E',
+    warrantyEndDate: initialData?.warrantyEndDate || '2025-01-15',
+    // Furniture Specifications
+    material: initialData?.material || 'Leather',
+    color: initialData?.color || 'Black',
+    dimensions: initialData?.dimensions || '120cm x 60cm x 75cm (L x W x H)',
+    // Vehicle Specifications
+    vehicleType: initialData?.vehicleType || 'Car',
+    registrationNumber: initialData?.registrationNumber || 'WP-ABC-1234',
+    fuelType: initialData?.fuelType || 'Diesel',
+    mileage: initialData?.mileage || '45000',
+    // Common Specs
+    condition: initialData?.condition || 'Good',
+    lastMaintenanceDate: initialData?.lastMaintenanceDate || '2025-12-15'
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -149,7 +171,7 @@ export function AssetForm({ onSubmit, initialData, onCancel, organizations }: As
           {/* Value */}
           <div>
             <label className="block text-sm text-gray-700 mb-2">
-              Value (USD) *
+              Value (Rs.) *
             </label>
             <input
               type="number"
@@ -160,7 +182,7 @@ export function AssetForm({ onSubmit, initialData, onCancel, organizations }: As
               min="0"
               step="0.01"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="e.g., 1500"
+              placeholder="e.g., 150000"
             />
           </div>
 
@@ -179,11 +201,22 @@ export function AssetForm({ onSubmit, initialData, onCancel, organizations }: As
               max="100"
               step="0.1"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="e.g., 20 (Electronics: 20%, Furniture: 10%)"
+              placeholder="e.g., 20"
             />
-            <p className="text-xs text-gray-500 mt-1">
-              Recommended: Electronics 20%, Furniture 10%, Vehicles 15%
-            </p>
+            <div className="mt-2 p-3 bg-blue-50 rounded-lg border border-blue-200">
+              <p className="text-xs text-blue-900 font-semibold mb-2">Recommended Rates (Sri Lanka):</p>
+              <ul className="text-xs text-blue-800 space-y-1">
+                <li>• <strong>Computer/Laptop:</strong> 20-33%</li>
+                <li>• <strong>Servers:</strong> 20%</li>
+                <li>• <strong>Office Furniture:</strong> 10%</li>
+                <li>• <strong>Vehicles:</strong> 15-20%</li>
+                <li>• <strong>Machinery/Equipment:</strong> 10-15%</li>
+                <li>• <strong>Software:</strong> 20-25%</li>
+              </ul>
+              <p className="text-xs text-blue-700 mt-2">
+                <strong>Example:</strong> If asset costs ₨150,000 at 20% rate: Annual depreciation = ₨30,000
+              </p>
+            </div>
           </div>
 
           {/* Assigned To */}

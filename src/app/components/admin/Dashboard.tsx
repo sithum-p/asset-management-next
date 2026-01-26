@@ -39,7 +39,7 @@ export function Dashboard({ assets }: DashboardProps) {
     },
     {
       title: 'Total Value',
-      value: `$${totalValue.toLocaleString()}`,
+      value: `₨${totalValue.toLocaleString()}`,
       icon: DollarSign,
       color: 'bg-purple-500'
     }

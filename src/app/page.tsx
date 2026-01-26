@@ -48,6 +48,28 @@ export interface Asset {
   description?: string;
   organizationId?: string;
   logs?: AssetLog[];
+  // PC/Laptop Specifications
+  brand?: string;
+  model?: string;
+  serialNumber?: string;
+  processor?: string;
+  ram?: string;
+  storage?: string;
+  operatingSystem?: string;
+  macAddress?: string;
+  warrantyEndDate?: string;
+  // Furniture Specifications
+  material?: string;
+  color?: string;
+  dimensions?: string;
+  // Vehicle Specifications
+  vehicleType?: string;
+  registrationNumber?: string;
+  fuelType?: string;
+  mileage?: string;
+  // Common Specs
+  condition?: string;
+  lastMaintenanceDate?: string;
 }
 
 export interface Organization {
@@ -108,7 +130,7 @@ export default function App() {
       status: 'active',
       location: 'Office - Floor 2',
       purchaseDate: '2024-01-15',
-      value: 1500,
+      value: 150000,
       depreciationRate: 20,
       assignedTo: 'Saman Perera',
       description: 'High-performance laptop for development',
@@ -158,7 +180,7 @@ export default function App() {
       status: 'active',
       location: 'Office - Floor 1',
       purchaseDate: '2023-06-20',
-      value: 350,
+      value: 35000,
       depreciationRate: 10,
       assignedTo: 'Saman Perera',
       organizationId: '1',
@@ -189,7 +211,7 @@ export default function App() {
       status: 'maintenance',
       location: 'Office - Floor 3',
       purchaseDate: '2023-03-10',
-      value: 800,
+      value: 55000,
       depreciationRate: 10,
       description: 'Color laser printer',
       organizationId: '1',
@@ -221,7 +243,7 @@ export default function App() {
       status: 'active',
       location: 'Meeting Room A',
       purchaseDate: '2023-05-15',
-      value: 1200,
+      value: 60000,
       depreciationRate: 8,
       organizationId: '2',
       logs: [
@@ -242,7 +264,7 @@ export default function App() {
       status: 'active',
       location: 'Office - Floor 2',
       purchaseDate: '2024-02-01',
-      value: 2500,
+      value: 250000,
       depreciationRate: 20,
       assignedTo: 'Amal Silva',
       organizationId: '2',
@@ -273,7 +295,7 @@ export default function App() {
       status: 'retired',
       location: 'Storage',
       purchaseDate: '2020-01-10',
-      value: 3000,
+      value: 30000,
       depreciationRate: 20,
       description: 'Replaced with cloud infrastructure',
       organizationId: '1',
@@ -315,7 +337,8 @@ export default function App() {
       status: 'lost',
       location: 'Unknown',
       purchaseDate: '2023-08-15',
-      value: 45,
+      value: 5500,
+      depreciationRate: 20,
       assignedTo: 'Saman Perera',
       description: 'Wireless mouse - reported missing',
       logs: [
@@ -355,7 +378,8 @@ export default function App() {
       status: 'lost',
       location: 'Unknown',
       purchaseDate: '2023-05-10',
-      value: 650,
+      value: 65000,
+      depreciationRate: 20,
       description: 'Monitor lost during office relocation',
       logs: [
         {
